@@ -1,15 +1,15 @@
 package com.sevasetu.backend.repository;
 
 import com.sevasetu.backend.model.Complaint;
-import com.sevasetu.backend.model.Complaintcategory;
-
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.*;
 
-public interface ComplaintRepository extends JpaRepository<Complaintcategory, Long> {
+@Repository
+public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
+    // Spring Data JPA gives us .save(), .findById(), .findAll(), etc. for free!
+    List<Complaint> findByWardId(Long wardId);
+
     List<Complaint> findByCitizenId(Long citizenId);
-
-    List<Complaint> findByStatus(String status);
 
 }

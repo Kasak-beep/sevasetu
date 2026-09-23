@@ -1,6 +1,7 @@
 package com.sevasetu.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -16,9 +17,13 @@ public class Complaint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title cannot be blank")
+    @Size(min = 5, max = 100, message = "Title must be between 5 and 100 characters")
     @Column(nullable = false)
     private String title;
 
+    @NotBlank(message = "Description cannot be blank")
+    @Size(min = 15, max = 500, message = "Description must be at least 15 characters long")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
@@ -34,6 +39,7 @@ public class Complaint {
     private LocalDateTime updatedAt;
 
     // This creates the "citizen_id" foreign key pointing to your User table
+    @NotNull(message = "Ward must be specified")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "citizen_id", nullable = false)
     private User citizen;
@@ -42,6 +48,7 @@ public class Complaint {
     @JoinColumn(name = "category_id", nullable = false)
     private Complaintcategory category;
 
+    @NotNull(message = "Ward must be specified")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ward_id", nullable = false)
     private Ward ward;
