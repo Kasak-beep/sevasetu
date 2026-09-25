@@ -8,6 +8,8 @@ import com.sevasetu.backend.service.ComplaintService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*; //like-restcontroller-request-post-put etc
 import java.util.*;
 
@@ -35,15 +37,17 @@ public class ComplaintController {
         return complaintService.getComplaintsByCitizen(citizenId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/status")
     public Complaint updateStatus(
-            @PathVariable Long id,
+            @PathVariable @NonNull Long id,
             @RequestParam ComplaintStatus status) {
         return complaintService.updateComplaintStatus(id, status);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public String deleteComplaint(@PathVariable Long id) {
+    public String deleteComplaint(@PathVariable @NonNull Long id) {
         complaintService.deleteComplaint(id);
         return "Sucess:Complaint with Id" + id + "has been deleted.";
 
