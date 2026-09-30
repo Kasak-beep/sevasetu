@@ -54,9 +54,13 @@ public class User {
 
     private String Otp;
 
-    @Column(nullable = false)
-    private boolean isVerified = false;
+    @Column(name = "is_verified", nullable = false)
+      private Boolean verified = false;
 
     private LocalDateTime otpGeneratedTime;
+
+    @ManyToOne
+    @JoinColumn(name = "ward_id")
+    private Ward ward;
 
 }

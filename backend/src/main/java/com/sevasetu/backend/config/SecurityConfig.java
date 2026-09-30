@@ -5,21 +5,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
-@EnableWebSecurity
+@Configuration // <-- This is critical so Spring knows to load it
+@EnableWebSecurity // <-- This enables custom security rules
 public class SecurityConfig {
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for Postman testing
-                .authorizeHttpRequests(auth -> auth
-                        // Explicitly allow public access to register and verify endpoints
-                        .requestMatchers("/users/register", "/users/verify-otp").permitAll()
-                        // Require authentication for anything else
-                        .anyRequest().authenticated());
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/users/**").permitAll()
+                .anyRequest().authenticated()
+            );
 
         return http.build();
     }
 }
+
+
+///users/** 

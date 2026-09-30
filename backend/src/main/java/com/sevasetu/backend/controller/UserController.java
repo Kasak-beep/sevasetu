@@ -3,13 +3,13 @@ package com.sevasetu.backend.controller;
 import com.sevasetu.backend.model.LoginRequest;
 import com.sevasetu.backend.model.User;
 import com.sevasetu.backend.repository.UserRepository;
-
+//import com.sevasetu.backend.config.SecurityConfig;
 import com.sevasetu.backend.service.UserService;
 
 import jakarta.validation.Valid;
 
-import java.util.Optional;
-import java.time.LocalDateTime;
+//import java.util.Optional;
+//import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,49 +24,45 @@ public class UserController {
     @Autowired 
     private UserRepository userRepository;
 
-    // This handles a POST request when someone submits registration data
     @PostMapping("/register")
-    // The @RequestBody annotation tells Spring: "Take the JSON from the front
-    // end and turn it into a User object automatically"
-    public String registerUser(@Valid @RequestBody User newUser) {
-        // We then simply pass this object to our UserService logic
-        return userService.registerUser(newUser);
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
+        String response = userService.registerUser(user);
+        if (response.startsWith("Error")) {
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public String loginUser(@Valid @RequestBody LoginRequest loginRequest) {
-        return userService.loginUser(loginRequest);
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
+        try{
+            String response = userService.loginUser(loginRequest);
+        return ResponseEntity.ok(response);}
+        catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
     }
 
     @PostMapping("/verify-otp")
-public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
-    Optional<User> userOptional = userRepository.findByEmail(email);
+    public ResponseEntity<?> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-    if (userOptional.isEmpty()) {
-        return ResponseEntity.badRequest().body("User not found!");
+        // Check if user is already verified
+        if (Boolean.TRUE.equals(user.getVerified())) {
+            return ResponseEntity.ok("User is already verified!");
+        }
+
+        // Your OTP verification logic here...
+        if (user.getOtp() != null && user.getOtp().equals(otp)) {
+            user.setVerified(true);
+            user.setOtp(null); // Clear OTP after success
+            userRepository.save(user);
+            return ResponseEntity.ok("OTP verified successfully!");
+        }
+
+        return ResponseEntity.badRequest().body("Invalid OTP");
     }
-
-    User user = userOptional.get();
-
-    if (user.isVerified()) {
-        return ResponseEntity.ok("User is already verified!");
-    }
-
-    if (user.getOtp() == null || !user.getOtp().equals(otp)) {
-        return ResponseEntity.badRequest().body("Invalid OTP!");
-    }
-
-    if (user.getOtpGeneratedTime().plusMinutes(5).isBefore(LocalDateTime.now())) {
-        return ResponseEntity.badRequest().body("OTP has expired. Please request a new one.");
-    }
-
-    // Mark as verified & clear OTP data
-    user.setVerified(true);
-    user.setOtp(null);
-    user.setOtpGeneratedTime(null);
-    userRepository.save(user);
-
-    return ResponseEntity.ok("Email verified successfully! You can now log in.");
-}
-
+  
 }

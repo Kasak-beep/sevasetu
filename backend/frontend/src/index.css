@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-[#0f1117] text-slate-100 font-sans antialiased selection:bg-orange-500 selection:text-white min-h-screen overflow-x-hidden;
+  }
+}
+
+/* Custom SevaSetu Theme Styles */
+.bg-dark-surface {
+  background-color: #181b24;
+}
+
+.bg-dark-card {
+  background-color: #222733;
+}
+
+.bg-dark-card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg-dark-card-hover:hover {
+  background-color: #2a303f;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(249, 115, 22, 0.25);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+/* Orange Civic Button Gradient */
+.btn-orange {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  transition: all 0.25s ease;
+}
+
+.btn-orange:hover {
+  background: linear-gradient(135deg, #ff7e22 0%, #f96614 100%);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.45);
+  transform: translateY(-1px);
+}
+
+.text-orange-accent {
+  color: #f97316;
+}
+
+/* Image Overlay Grid for Hero */
+.hero-collage-overlay {
+  background: linear-gradient(to bottom, rgba(15, 17, 23, 0.75) 0%, rgba(15, 17, 23, 0.95) 100%),
+              radial-gradient(circle at center, rgba(15, 17, 23, 0.4) 0%, rgba(15, 17, 23, 0.98) 100%);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f1117;
+}
+::-webkit-scrollbar-thumb {
+  background: #252b38;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}

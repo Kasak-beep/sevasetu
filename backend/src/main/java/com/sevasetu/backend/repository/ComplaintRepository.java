@@ -3,7 +3,9 @@ package com.sevasetu.backend.repository;
 import com.sevasetu.backend.model.Complaint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.*;
+import java.util.List;
+
+import com.sevasetu.backend.model.ComplaintStatus;
 
 @Repository
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
@@ -12,4 +14,12 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     List<Complaint> findByCitizenId(Long citizenId);
 
-}
+    // 'status' is a direct enum field in Complaint, so no underscore needed
+    List<Complaint> findByStatus(ComplaintStatus status);
+
+    // Combining ward relationship ID and status
+    List<Complaint> findByWardIdAndStatus(Long wardId, ComplaintStatus status);
+
+}// SELECT * FROM complaints
+ // WHERE ward_id = ?
+ // AND status = ?;
